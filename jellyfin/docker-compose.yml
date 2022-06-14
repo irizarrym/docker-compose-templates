@@ -1,0 +1,22 @@
+# https://hub.docker.com/r/jellyfin/jellyfin
+
+version: "3.9"
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:10.8.0
+    pull_policy: if_not_present
+    container_name: jellyfin
+    hostname: jellyfin
+    ports:
+      - 8096:8096/tcp
+    restart: unless-stopped
+    # see https://jellyfin.org/docs/general/administration/hardware-acceleration.html
+    # devices:
+    #   - /dev/dri/renderD128:/dev/dri/renderD128
+    #   - /dev/dri/card0:/dev/dri/card0
+    tmpfs:
+      - /config/transcodes
+    volumes:
+      - ./volumes/jellyfin/cache:/cache
+      - ./volumes/jellyfin/config:/config
+      - /path/to/movies:/mnt/movies:ro

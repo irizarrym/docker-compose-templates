@@ -1,0 +1,29 @@
+# https://hub.docker.com/r/plexinc/pms-docker
+
+version: "3.9"
+services:
+  plex:
+    image: plexinc/pms-docker:latest
+    pull_policy: always
+    container_name: plex
+    hostname: plex
+    environment:
+      TZ: "America/New_York"
+      PLEX_CLAIM: "claim-abcdefg"  # https://www.plex.tv/claim/
+    ports:
+      - "32400:32400"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "/healthcheck.sh"]
+      interval: 1m
+      timeout: 30s
+      retries: 3
+      start_period: 1m
+    # devices:
+    #   - /dev/dri/renderD128:/dev/dri/renderD128
+    #   - /dev/dri/card0:/dev/dri/card0
+    tmpfs:
+      - /transcode
+    volumes:
+      - ./volumes/plex/config:/config
+      - /path/to/movies:/mnt/movies:ro  # remove :ro to store optimized versions alongside video files

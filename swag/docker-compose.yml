@@ -1,0 +1,46 @@
+# Register a subdomain at https://www.duckdns.org/
+
+# https://hub.docker.com/r/linuxserver/swag
+# https://hub.docker.com/r/linuxserver/duckdns
+
+version: "3.9"
+services:
+  swag:
+    image: lscr.io/linuxserver/swag
+    pull_policy: always
+    container_name: swag
+    hostname: swag
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped
+    depends_on:
+      - duckdns
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      PUID: "1000"
+      PGID: "1000"
+      TZ: America/NewYork
+      URL: "mysubdomain.duckdns.org"
+      SUBDOMAINS: "wildcard"
+      DUCKDNSTOKEN: 12345678-abcd-1234-5678-12345678abcd
+      VALIDATION: duckdns
+    volumes:
+      - ./volumes/swag/config:/config
+
+  duckdns:
+    image: lscr.io/linuxserver/duckdns
+    pull_policy: always
+    container_name: duckdns
+    hostname: duckdns
+    restart: unless-stopped
+    environment:
+      PUID: "1000"
+      PGID: "1000"
+      TZ: America/NewYork
+      SUBDOMAINS: mysubdomain
+      TOKEN: 12345678-abcd-1234-5678-12345678abcd
+      LOG_FILE: "true"
+    volumes:
+      - ./volumes/duckdns/config:/config
