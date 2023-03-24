@@ -1,0 +1,53 @@
+services:
+  pihole:
+    image: pihole/pihole:latest
+    container_name: pihole
+    hostname: pihole.internal
+    restart: unless-stopped
+    ports:
+      - "53:53/tcp"    # DNS TCP
+      - "53:53/udp"    # DNS UDP
+      - "80:80/tcp"    # HTTP WebUI
+      - "443:443/tcp"  # HTTPS WebUI
+      # - "67:67/udp"  # DHCP - Only needed if you plan to use Pi-hole as a DHCP server.
+    # cap_add:
+    #   - NET_ADMIN  # Only needed if you plan to use Pi-hole as a DHCP server.
+    environment:
+      TZ: "America/New_York"  # Set to your local timezone
+      # WEBPASSWORD: "set a secure password here or it will be random"
+    volumes:
+      - "./volumes/pihole/etc-pihole:/etc/pihole"
+      - "./volumes/pihole/etc-dnsmasq.d:/etc/dnsmasq.d"
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: "256M"
+    networks:
+      net_pihole:
+        # This IP address should fit the subnet and ip_range below.
+        # This will be the local IP address of your DNS server.
+        # It will be accessible by all other devices connected to your LAN.
+        ipv4_address: "192.168.0.60"
+
+networks:
+  net_pihole:
+    driver: macvlan
+    driver_opts:
+      # Set this to the name of your network interface.
+      # Try running any of the following commands:
+      # > ip link show
+      # > nmcli device status
+      # > netstat -i
+      # > tcpdump --list-interfaces
+      parent: eth0
+    ipam:
+      config:
+          # subnet and gateway should match that of the parent network interface.
+        - subnet: "192.168.0.1/24"
+          gateway: "192.168.0.1"
+          # ip_range limits valid IP addresses to a certain range.
+          # This will limit it to IP addresses in the range 192.168.0.1 to 192.168.0.64.
+          # This is to prevent it from conflicting with IP addresses assigned automatically
+          # by the DHCP server on your router.
+          ip_range: "192.168.0.64/26"

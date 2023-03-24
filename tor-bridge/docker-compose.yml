@@ -1,0 +1,28 @@
+services:
+  tor-relay:
+    image: ilshidur/tor-relay:latest
+    pull_policy: always
+    container_name: tor-relay
+    hostname: tor-relay
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: "512M"
+          cpus: "1"
+    ports:
+      - "9001:9001"
+      - "9030:9030"
+    environment:
+      RELAY_TYPE: bridge
+      TOR_ORPort: "9001"
+      TOR_DirPort: "9030"
+      # Set this to a unique nickname for your Tor relay
+      TOR_Nickname: SET_UNIQUE_NICKNAME_HERE
+      TOR_RelayBandwidthRate: 1024 KBytes
+      TOR_RelayBandwidthBurst: 2048 KBytes
+      TZ: America/New_York
+      PUID: "24680"
+      PGID: "24680"
+    volumes:
+      - ./volumes/tor-relay/data:/data:Z

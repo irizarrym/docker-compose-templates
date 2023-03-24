@@ -1,0 +1,18 @@
+services:
+  snowflake:
+    image: thetorproject/snowflake-proxy:latest
+    pull_policy: always
+    container_name: snowflake
+    network_mode: host
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: "128M"
+          cpus: "1.0"
+    command:
+      - "-verbose"
+      - "-nat-retest-interval"
+      - "24h0m0s"
+      - "-summary-interval"
+      - "1h0m0s"

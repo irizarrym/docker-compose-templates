@@ -3,13 +3,12 @@
 # https://hub.docker.com/r/linuxserver/swag
 # https://hub.docker.com/r/linuxserver/duckdns
 
-version: "3.9"
 services:
   swag:
     image: lscr.io/linuxserver/swag
     pull_policy: always
     container_name: swag
-    hostname: swag
+    hostname: swag.internal
     cap_add:
       - NET_ADMIN
     restart: unless-stopped
@@ -38,7 +37,7 @@ services:
     environment:
       PUID: "1000"
       PGID: "1000"
-      TZ: America/NewYork
+      TZ: America/New_York
       SUBDOMAINS: mysubdomain
       TOKEN: 12345678-abcd-1234-5678-12345678abcd
       LOG_FILE: "true"

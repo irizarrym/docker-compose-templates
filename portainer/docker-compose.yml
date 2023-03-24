@@ -1,0 +1,17 @@
+services:
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    hostname: portainer.internal
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: "1G"
+          cpus: "1"
+    ports:
+      - "8000:8000"
+      - "9443:9443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./volumes/portainer/data:/data"

@@ -1,19 +1,23 @@
 # https://hub.docker.com/r/jellyfin/jellyfin
 
-version: "3.9"
 services:
   jellyfin:
-    image: jellyfin/jellyfin:10.8.0
+    image: jellyfin/jellyfin:latest
     pull_policy: if_not_present
     container_name: jellyfin
-    hostname: jellyfin
+    hostname: jellyfin.internal
     ports:
-      - 8096:8096/tcp
+      - 8096:8096/tcp  # http
+      - 8920:8920/tcp  # https
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: "4G"
+          cpus: 4
     # see https://jellyfin.org/docs/general/administration/hardware-acceleration.html
     # devices:
-    #   - /dev/dri/renderD128:/dev/dri/renderD128
-    #   - /dev/dri/card0:/dev/dri/card0
+    #   - /dev/dri:/dev/dri
     tmpfs:
       - /config/transcodes
     volumes:

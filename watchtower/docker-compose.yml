@@ -1,0 +1,46 @@
+#
+# Watchtower automatically updates your Docker containers
+#
+# If you only want update notifications, not auto-updates,
+# consider DIUN instead:
+# https://github.com/crazy-max/diun
+# 
+
+services:
+  watchtower:
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+    image: containrrr/watchtower:latest
+    pull_policy: always
+    container_name: watchtower
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: '1'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    
+    # There are many other configurable environment variables:
+    # https://containrrr.dev/watchtower/arguments/
+    environment:
+      # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+      - TZ=America/New_York
+
+      # https://pkg.go.dev/github.com/robfig/cron@v1.2.0#hdr-CRON_Expression_Format
+      - "WATCHTOWER_SCHEDULE=0 0 4 * * *"
+
+      # Timeout before forcefully stopping container (default 10s)
+      # https://containrrr.dev/watchtower/arguments/#wait_until_timeout
+      - WATCHTOWER_TIMEOUT=60s
+    
+    # List all container names that you automatically want to update
+    # or remove `command` to update all running containers in Docker.
+    # You may also use labels to include or exclude containers:
+    # https://containrrr.dev/watchtower/container-selection/#full_exclude
+    command:
+      - --label-enable
+      - container-name-1
+      - container-name-2
+      - container-name-3
