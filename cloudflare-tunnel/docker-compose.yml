@@ -1,0 +1,22 @@
+# This template shows how to run a Cloudflare Tunnel container
+# as part of a Docker Compose file. 
+
+services:
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    pull_policy: always
+    container_name: cloudflared
+    hostname: cloudflared.internal
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: '1'
+    command: tunnel --no-autoupdate run
+    environment:
+      - TUNNEL_TOKEN=PasteYourTunnelTokenHere
+
+networks:
+  default:
+    name: network-cloudflared
