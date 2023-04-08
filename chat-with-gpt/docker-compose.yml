@@ -1,0 +1,21 @@
+# Chat with GPT is an unofficial ChatGPT client that can be self-hosted.
+# When self-hosted, chat history is stored locally, not in the cloud.
+# https://github.com/cogentapps/chat-with-gpt
+
+services:
+  chat-with-gpt:
+    image: ghcr.io/cogentapps/chat-with-gpt:release
+    pull_policy: if_not_present
+    container_name: chat-with-gpt
+    hostname: chat-with-gpt.internal
+    restart: unless-stopped
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '1'
+    volumes:
+      - "./volumes/chat-with-gpt/data:/app/data"
