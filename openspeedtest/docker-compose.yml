@@ -1,0 +1,15 @@
+services:
+  openspeedtest:
+    image: openspeedtest/latest:latest
+    pull_policy: always
+    container_name: ${CONTAINER_NAME}
+    hostname: ${HOSTNAME}
+    restart: unless-stopped
+    ports:
+      - "3000:3000"  # HTTP
+      - "3001:3001"  # HTTPS
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 256M
